@@ -9,3 +9,5 @@ Etherverse will be active when Ethereum changing to POS. And use ETHash as minin
 It will carry on all the ledger record, concluding the tokens. 
 
 Stay tuned.
+
+Email: dao@etherverse.top
