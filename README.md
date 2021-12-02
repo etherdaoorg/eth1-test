@@ -11,3 +11,5 @@ It will carry on all the ledger record, concluding the tokens.
 Stay tuned.
 
 Email: dao@etherverse.top
+
+Twitter: https://twitter.com/EtherverseDao
