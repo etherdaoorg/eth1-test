@@ -1,7 +1,7 @@
 # etherverse
 What is Etherverse DAO?
 
-Etherverse is the fork of ethereum. The target of Etherverse is to carry on the Pow consensus, and the Ledger, include the tokens .we believe in the coin must be minted by energy only. And it’s managed by DAO.
+Etherverse is the fork of ethereum. Trade symbol: ETV. The target of Etherverse is to carry on the Pow consensus, and the Ledger, include the tokens .we believe in the coin must be minted by energy only. And it’s managed by DAO.
 
 How?
 
