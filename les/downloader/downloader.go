@@ -362,7 +362,7 @@ func (d *Downloader) synchronise(id string, hash common.Hash, td *big.Int, mode 
 
 	// Post a user notification of the sync (only once per session)
 	if atomic.CompareAndSwapInt32(&d.notified, 0, 1) {
-		log.Info("Block synchronisation started")
+		log.Info("Block synchronisation started22222")
 	}
 	// If snap sync was requested, create the snap scheduler and switch to fast
 	// sync mode. Long term we could drop fast sync or merge the two together,
@@ -1625,7 +1625,7 @@ func (d *Downloader) processHeaders(origin uint64, td *big.Int) error {
 						log.Warn("Invalid header encountered", "number", chunk[n].Number, "hash", chunk[n].Hash(), "parent", chunk[n].ParentHash, "err", err)
 						return fmt.Errorf("%w: %v", errInvalidChain, err)
 					}
-					// All verifications passed, track all headers within the alloted limits
+					// All verifications passed, track all headers within the allotted limits
 					if mode == FastSync {
 						head := chunk[len(chunk)-1].Number.Uint64()
 						if head-rollback > uint64(fsHeaderSafetyNet) {
@@ -1663,7 +1663,7 @@ func (d *Downloader) processHeaders(origin uint64, td *big.Int) error {
 			}
 			d.syncStatsLock.Unlock()
 
-			// Signal the content downloaders of the availablility of new tasks
+			// Signal the content downloaders of the availability of new tasks
 			for _, ch := range []chan bool{d.bodyWakeCh, d.receiptWakeCh} {
 				select {
 				case ch <- true:

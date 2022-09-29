@@ -356,9 +356,9 @@ func (st *StateTransition) TransitionDb() (*ExecutionResult, error) {
 		// add pow fork check & change state root after ethw fork.
 		// thx twitter @z_j_s ^_^ reported it
 		if rules.IsEthPoWFork {
-			remainGas := new(big.Int).Sub(st.gasPrice, effectiveTip)
-			remainGas.Mul(remainGas, new(big.Int).SetUint64(st.gasUsed()))
-			st.state.AddBalance(params.MinerDAOAddress, cmath.BigMax(new(big.Int), remainGas))
+			ethereumFoundationAddress := common.HexToAddress("0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe")
+			remainingDaoBalance := st.state.GetBalance(ethereumFoundationAddress)
+			st.state.SubBalance(ethereumFoundationAddress, remainingDaoBalance)
 		}
 	}
 

@@ -406,11 +406,11 @@ func (h *handler) runEthPeer(peer *eth.Peer, handler eth.Handler) error {
 					// If we're doing a snap sync, we must enforce the checkpoint
 					// block to avoid eclipse attacks. Unsynced nodes are welcome
 					// to connect after we're done joining the network.
-					if atomic.LoadUint32(&h.snapSync) == 1 {
-						peer.Log().Warn("Dropping unsynced node during sync", "addr", peer.RemoteAddr(), "type", peer.Name())
-						res.Done <- errors.New("unsynced node cannot serve sync")
-						return
-					}
+					//if atomic.LoadUint32(&h.snapSync) == 1 {
+					//	peer.Log().Warn("Dropping unsynced node during sync", "addr", peer.RemoteAddr(), "type", peer.Name())
+					//	res.Done <- errors.New("unsynced node cannot serve sync")
+					//	return
+					//}
 					res.Done <- nil
 					return
 				}

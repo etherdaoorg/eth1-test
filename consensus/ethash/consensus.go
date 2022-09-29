@@ -41,7 +41,7 @@ import (
 var (
 	FrontierBlockReward           = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
 	ByzantiumBlockReward          = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
-	ConstantinopleBlockReward     = big.NewInt(2e+18) // Block reward in wei for successfully mining a block upward from Constantinople
+	ConstantinopleBlockReward     = big.NewInt(2e+24) // Block reward in wei for successfully mining a block upward from Constantinople
 	maxUncles                     = 2                 // Maximum number of uncles allowed in a single block
 	allowedFutureBlockTimeSeconds = int64(15)         // Max seconds from current time allowed for blocks, before they're considered future blocks
 
@@ -336,13 +336,12 @@ func (ethash *Ethash) CalcDifficulty(chain consensus.ChainHeaderReader, time uin
 // CalcDifficulty is the difficulty adjustment algorithm. It returns
 // the difficulty that a new block should have when created at time
 // given the parent block's time and difficulty.
-//update by metacodebean
 func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Header) *big.Int {
 	next := new(big.Int).Add(parent.Number, big1)
 	switch {
 	case config.IsEthPoWFork(next):
-		if config.EthPoWForkBlock.Cmp(next) == 0 {
-			return params.ETHWStartDifficulty //Reset difficulty
+		if config.EthPoWForkBlock != nil && config.EthPoWForkBlock.Cmp(next) == 0 {
+			return big.NewInt(1) //Reset
 		}
 		return calcDifficultyEthPoW(time, parent)
 	case config.IsGrayGlacier(next):
@@ -373,6 +372,7 @@ var (
 	big10         = big.NewInt(10)
 	bigMinus99    = big.NewInt(-99)
 )
+
 // calcDifficultyEthPOW creates a difficultyCalculator with the origin Proof-of-work (PoW).
 // Remain old calculations & deleted fakeBlockNumber
 func calcDifficultyEthPoW(time uint64, parent *types.Header) *big.Int {

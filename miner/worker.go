@@ -882,6 +882,12 @@ func (w *worker) commitTransactions(env *environment, txs *types.TransactionsByP
 		from, _ := types.Sender(env.signer, tx)
 		// Check whether the tx is replay protected. If we're not in the EIP155 hf
 		// phase, start ignoring the sender until we do.
+		// add IsEthPoWFork check sign with chainid protected force check
+		if w.chainConfig.IsEthPoWFork(env.header.Number) && !tx.Protected() {
+			log.Trace("Ignoring not protected transaction", "hash", tx.Hash(), "eipEthPoW", w.chainConfig.EthPoWForkBlock)
+			txs.Pop()
+			continue
+		}
 		if tx.Protected() && !w.chainConfig.IsEIP155(env.header.Number) {
 			log.Trace("Ignoring reply protected transaction", "hash", tx.Hash(), "eip155", w.chainConfig.EIP155Block)
 
@@ -1200,6 +1206,9 @@ func (w *worker) getSealingBlock(parent common.Hash, timestamp uint64, coinbase 
 // isTTDReached returns the indicator if the given block has reached the total
 // terminal difficulty for The Merge transition.
 func (w *worker) isTTDReached(header *types.Header) bool {
+	if w.chain.Config().EthPoWForkSupport {
+		return false
+	}
 	td, ttd := w.chain.GetTd(header.ParentHash, header.Number.Uint64()-1), w.chain.Config().TerminalTotalDifficulty
 	return td != nil && ttd != nil && td.Cmp(ttd) >= 0
 }
