@@ -78,7 +78,7 @@ var (
 		GrayGlacierBlock:        big.NewInt(15_050_000),
 		EthPoWForkBlock:         big.NewInt(15_537_394),
 		EthPoWForkSupport:       true,
-		ChainID_ALT:             big.NewInt(10001), //10001
+		ChainID_ALT:             big.NewInt(120),
 		TerminalTotalDifficulty: nil,               // 58_750_000_000_000_000_000_000
 		Ethash:                  new(EthashConfig),
 	}
@@ -822,6 +822,3 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool) Rules {
 		IsEthPoWFork:     c.IsEthPoWFork(num),
 	}
 }
-
-// MinerDAOAddress EIP1559 remain gas to DAO Address
-var MinerDAOAddress = common.HexToAddress("0x01c2C2FB1C31d902FA6C8A5A60a93353704BA4bc")

@@ -26,7 +26,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"runtime"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/mclock"
 	"github.com/ethereum/go-ethereum/common/prque"
@@ -1210,12 +1210,8 @@ func (bc *BlockChain) InsertReceiptChain(blockChain types.Blocks, receiptChain [
 		context = append(context, []interface{}{"ignored", stats.ignored}...)
 	}
 	log.Info("Imported new block receipts", context...)
-	return 0, nil
-}
 
-func stack() string {
-    var buf [2 << 10]byte
-    return string(buf[:runtime.Stack(buf[:], true)])
+	return 0, nil
 }
 
 var lastWrite uint64

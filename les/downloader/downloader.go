@@ -362,7 +362,7 @@ func (d *Downloader) synchronise(id string, hash common.Hash, td *big.Int, mode 
 
 	// Post a user notification of the sync (only once per session)
 	if atomic.CompareAndSwapInt32(&d.notified, 0, 1) {
-		log.Info("Block synchronisation started22222")
+		log.Info("Block synchronisation started")
 	}
 	// If snap sync was requested, create the snap scheduler and switch to fast
 	// sync mode. Long term we could drop fast sync or merge the two together,
