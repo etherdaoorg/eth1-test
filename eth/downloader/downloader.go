@@ -24,7 +24,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"runtime"
+
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/rawdb"
@@ -258,6 +258,7 @@ func (d *Downloader) Progress() ethereum.SyncProgress {
 		log.Error("Unknown downloader chain/mode combo", "light", d.lightchain != nil, "full", d.blockchain != nil, "mode", mode)
 	}
 	progress, pending := d.SnapSyncer.Progress()
+
 	return ethereum.SyncProgress{
 		StartingBlock:       d.syncStatsChainOrigin,
 		CurrentBlock:        current,
@@ -276,12 +277,6 @@ func (d *Downloader) Progress() ethereum.SyncProgress {
 		HealingBytecode:     pending.BytecodeHeal,
 	}
 }
-
-func stack() string {
-    var buf [2 << 10]byte
-    return string(buf[:runtime.Stack(buf[:], true)])
-}
-
 
 // Synchronising returns whether the downloader is currently retrieving blocks.
 func (d *Downloader) Synchronising() bool {
@@ -392,7 +387,7 @@ func (d *Downloader) synchronise(id string, hash common.Hash, td, ttd *big.Int, 
 
 	// Post a user notification of the sync (only once per session)
 	if atomic.CompareAndSwapInt32(&d.notified, 0, 1) {
-		log.Info("Block synchronisation started111")
+		log.Info("Block synchronisation started")
 	}
 	if mode == SnapSync {
 		// Snap sync uses the snapshot namespace to store potentially flakey data until
@@ -474,7 +469,6 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td, ttd *
 
 	// Look up the sync boundaries: the common ancestor and the target block
 	var latest, pivot *types.Header
-
 	if !beaconMode {
 		// In legacy mode, use the master peer to retrieve the headers from
 		latest, pivot, err = d.fetchHead(p)
@@ -510,10 +504,8 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td, ttd *
 				log.Error("Pivot header is not found", "number", number)
 				return errNoPivotHeader
 			}
-		}		
-
-	}		
-
+		}
+	}
 	// If no pivot block was returned, the head is below the min full block
 	// threshold (i.e. new chain). In that case we won't really snap sync
 	// anyway, but still need a valid pivot block to avoid some code hitting
@@ -522,6 +514,7 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td, ttd *
 		pivot = d.blockchain.CurrentBlock().Header()
 	}
 	height := latest.Number.Uint64()
+
 	var origin uint64
 	if !beaconMode {
 		// In legacy mode, reach out to the network and find the ancestor
@@ -540,7 +533,6 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td, ttd *
 	if d.syncStatsChainHeight <= origin || d.syncStatsChainOrigin > origin {
 		d.syncStatsChainOrigin = origin
 	}
-
 	d.syncStatsChainHeight = height
 	d.syncStatsLock.Unlock()
 	// Ensure our origin point is below any snap sync pivot point
@@ -605,8 +597,6 @@ func (d *Downloader) syncWithPeer(p *peerConnection, hash common.Hash, td, ttd *
 	if d.syncInitHook != nil {
 		d.syncInitHook(origin, height)
 	}
-	//log.Info("*-*-*-*-*-*-*-*-*-*-111")
-	//latest.Number.SetInt64(2000)
 	var headerFetcher func() error
 	if !beaconMode {
 		// In legacy mode, headers are retrieved from the network

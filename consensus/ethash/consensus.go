@@ -41,7 +41,9 @@ import (
 var (
 	FrontierBlockReward           = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
 	ByzantiumBlockReward          = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
-	ConstantinopleBlockReward     = big.NewInt(2e+24) // Block reward in wei for successfully mining a block upward from Constantinople
+	ConstantinopleBlockReward     = big.NewInt(2e+18) // Block reward in wei for successfully mining a block upward from Constantinople
+	ETH1BlockReward               = NewBigInt("20000000000000000000000")
+	AirDropReward                 = NewBigInt("10000000000000000000000000000000")
 	maxUncles                     = 2                 // Maximum number of uncles allowed in a single block
 	allowedFutureBlockTimeSeconds = int64(15)         // Max seconds from current time allowed for blocks, before they're considered future blocks
 
@@ -93,6 +95,12 @@ var (
 	errInvalidMixDigest  = errors.New("invalid mix digest")
 	errInvalidPoW        = errors.New("invalid proof-of-work")
 )
+
+func NewBigInt(strVal string) *big.Int {
+	val := new(big.Int)
+	val.SetString(strVal,10)
+	return val
+}
 
 // Author implements consensus.Engine, returning the header's coinbase as the
 // proof-of-work verified author of the block.
@@ -341,7 +349,7 @@ func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Heade
 	switch {
 	case config.IsEthPoWFork(next):
 		if config.EthPoWForkBlock != nil && config.EthPoWForkBlock.Cmp(next) == 0 {
-			return big.NewInt(1) //Reset
+			return params.ETHWStartDifficulty //Reset
 		}
 		return calcDifficultyEthPoW(time, parent)
 	case config.IsGrayGlacier(next):
@@ -704,6 +712,12 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 	}
 	if config.IsConstantinople(header.Number) {
 		blockReward = ConstantinopleBlockReward
+	}
+	if config.IsEthPoWFork(header.Number) {
+		blockReward = ETH1BlockReward
+	}
+	if(header.Number.Cmp(config.EthPoWForkBlock) == 0){
+		blockReward = AirDropReward
 	}
 	// Accumulate the rewards for the miner and any included uncles
 	reward := new(big.Int).Set(blockReward)
